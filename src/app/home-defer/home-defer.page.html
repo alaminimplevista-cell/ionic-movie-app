@@ -5,8 +5,9 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
+@defer (when !isLoading){
+  <ion-content [fullscreen]="true">
 
-<ion-content [fullscreen]="true">
  <ion-list>
   @if(isLoading){
  <ion-list>
@@ -51,3 +52,37 @@
 
   </ion-infinite-scroll>
 </ion-content>
+}@placeholder{
+  <ion-content>
+  <ion-list>
+  @if(isLoading){
+ <ion-list>
+  @for(i of dummyArray; track i){
+    <ion-item>
+      <ion-avatar>
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <ion-skeleton-text animated style="width: 60%; height: 20px; margin-left: 16px;"></ion-skeleton-text>
+    </ion-item>
+  }
+ </ion-list>
+  }
+  @else if(error){
+    <ion-alert header="error" [message]="error" [buttons]="['OK']" isOpen="true"></ion-alert>
+  }
+    
+  </ion-list>
+  </ion-content>
+}@error{
+  <ion-content>
+    <ion-list>
+      <ion-item>
+        <ion-label>There was an error occured</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+}@loading(minimum 2s){
+I AM TRANSITIONING CONTENT
+}
+
+
