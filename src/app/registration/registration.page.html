@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>registration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">registration</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card class="registration-form-container">
+    <ion-card-header>
+      <ion-card-title>Registration</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="registerFromGroup" (ngSubmit)="handleSubmit()">
+        <ion-list>
+          <ion-item>
+            <ion-input type="text" label="Username" placeholder="Enter Your Username Here"
+            formControlName="userName"
+            ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input type="email" label="Email" placeholder="Enter Your Email Here"
+            formControlName="email"
+            ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input type="password" label="Password" placeholder="Enter Your Password Here"
+            formControlName="password"
+            >
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <div class="form-submit-button-container">
+            <ion-button type="submit" class="form-submit-button">Register</ion-button>
+          </div>
+          <ion-text>
+            Already have an account?
+            <a type="button" routerLink='/login'>Login Here</a>
+          </ion-text>
+        </ion-list>
+      </form>
+    </ion-card-content>
+    </ion-card>
+
+</ion-content>

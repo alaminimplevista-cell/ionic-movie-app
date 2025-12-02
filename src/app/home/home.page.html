@@ -7,6 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-searchbar animated="true" placeholder="Search Movie by Title" [value]="searchText" (ionInput)="applysearch($event)"></ion-searchbar>
  <ion-list>
   @if(isLoading){
  <ion-list>
@@ -26,10 +27,10 @@
     
   </ion-list>
   <ion-list>
-    @for(movie of movies;track  movie.id){
-      <ion-item [routerLink]="['/details', movie.id]">
+    @for(movie of filteredMovies;track  movie.id){
+      <ion-item (click)="navigateToDetailsPage(movie.id)">
         <ion-avatar slot="start">
-          <img [src]="imageBaseUrl+'/w92'+movie.poster_path" alt="{{movie.title}} Poster"/>
+          <img [src]="imageBaseUrl+'/w92'+movie.poster_path" [alt]="movie.title + ' Poster'"/>
         </ion-avatar>
         <ion-label>
           <h2>Title: {{movie.title}}</h2>

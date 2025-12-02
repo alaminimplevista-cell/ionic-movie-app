@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="login-form-container">
+    <ion-card-header>
+      <ion-card-title>Login</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="loginFormGroup" (ngSubmit)="handleSubmit()">
+        <ion-list>
+          <ion-item>
+
+            <ion-input type="email" formControlName="email" required label="Email"
+              placeholder="Enter Your Email Here"></ion-input>
+          </ion-item>
+          <ion-item>
+
+            <ion-input type="password" label="Password" formControlName="password" required
+              placeholder="Enter Your Password Here">
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+            </ion-input>
+          </ion-item>
+          <div class="form-submit-button-container">
+          <ion-button type="submit" class="form-submit-button">Login</ion-button>
+           </div> 
+          <ion-text>
+            Don't have an account?
+            <button type="button" (click)="navigateToRegistrationPage()">Register Here</button>
+          </ion-text>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

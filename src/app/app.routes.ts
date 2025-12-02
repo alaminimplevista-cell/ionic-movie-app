@@ -7,7 +7,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home-defer',
+    redirectTo: 'home',
     pathMatch: 'full',
   },
   {
@@ -18,5 +18,13 @@ export const routes: Routes = [
     
     path: 'home-defer',
     loadComponent: () => import('./home-defer/home-defer.page').then( m => m.HomeDeferPage)
+  },  {
+    path: 'login',
+    loadComponent: () => import('./login/login.page').then( m => m.LoginPage)
   },
+  {
+    path: 'registration',
+    loadComponent: () => import('./registration/registration.page').then( m => m.RegistrationPage)
+  },
+
 ];

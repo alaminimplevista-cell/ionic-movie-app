@@ -1,25 +1,11 @@
 import { Component, inject } from '@angular/core';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  InfiniteScrollCustomEvent,
-  IonList,
-  IonItem,
-  IonSkeletonText,
-  IonAvatar,
-  IonAlert,
-  IonLabel,
-  IonBadge,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent
-} from '@ionic/angular/standalone';
-import { Movie } from '../services/movie';
-import { MovieResult } from '../services/interfaces';
+import { IonHeader, IonToolbar, IonTitle, IonContent, InfiniteScrollCustomEvent, IonList, IonItem, IonSkeletonText, IonAvatar, IonAlert, IonLabel, IonBadge, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar } from '@ionic/angular/standalone';
 import { catchError, finalize, Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Movie } from '../httpService/movie.service';
+import { environment } from 'src/environments/environment';
+import { MovieDetailsModel } from '../models/movie';
 
 @Component({
   selector: 'app-home',
@@ -40,21 +26,23 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     IonBadge,
     IonInfiniteScroll,
-    IonInfiniteScrollContent
-  ],
+    IonInfiniteScrollContent,
+    IonSearchbar
+],
 })
 export class HomePage {
   private movieService = inject(Movie);
   private currentPage: number = 1;
-  public movies: MovieResult[] = [];
-  public error: any = null;
+  private movies: MovieDetailsModel[] = [];
+  public error: string = "";
   public isLoading: boolean = false;
-  public dummyArray = new Array(10);
-  public imageBaseUrl: string = 'https://image.tmdb.org/t/p';
+  public dummyArray = new Array(9);
+  public searchText:string = "";
+  public imageBaseUrl: string = environment.image_base_url;
+  public filteredMovies:MovieDetailsModel[] = [];
+  private router = inject(Router)
   constructor() {
     this.loadMovies();
-
-    // this.loadMovieDetails();
   }
   loadMovies(event?: InfiniteScrollCustomEvent) {
     if (!event) {
@@ -74,24 +62,43 @@ export class HomePage {
             'An error occurred while fetching movies.';
           return [];
         })
+      
+        
       )
       .subscribe({
         next: (res) => {
           this.movies.push(...res.results);
+          this.applysearch();
           if (event) {
             event.target.disabled = this.currentPage === res.total_pages;
           }
         },
       });
   }
-
+  applysearch(event?:any){
+    if(event){
+      this.searchText = event.target.value;
+    }
+    
+    const searchTerm = this.searchText.trim().toLowerCase();
+    if(searchTerm === ""){
+      this.filteredMovies = this.movies;
+    } else {
+      this.filteredMovies = this.movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
+    }
+  }
   loadMore(event: InfiniteScrollCustomEvent) {
     this.currentPage++;
     this.loadMovies(event);
   }
-  //  loadMovieDetails(){
-  //   this.movieService.getMovideDetails('278').subscribe(res => {
-  //     console.log(res);
-  //   })
-  // }
+  navigateToDetailsPage(movieId:number){
+    const auth_token = localStorage.getItem('auth_token');
+    if(!auth_token||auth_token?.trim()===''){
+        this.router.navigateByUrl(`/login?redirect_uri=/details/${movieId}`)
+    }
+    else{
+        this.router.navigateByUrl(`/details/${movieId}`)
+    }
+  }
+ 
 }

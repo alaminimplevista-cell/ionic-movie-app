@@ -1,26 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  InfiniteScrollCustomEvent,
-  IonList,
-  IonItem,
-  IonSkeletonText,
-  IonAvatar,
-  IonAlert,
-  IonLabel,
-  IonBadge,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent
+import { Component, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { IonHeader, IonToolbar, IonTitle, IonContent, InfiniteScrollCustomEvent, IonList, IonItem, IonSkeletonText, IonAvatar, IonAlert, IonLabel, IonBadge, IonInfiniteScroll, IonInfiniteScrollContent, IonSpinner } from '@ionic/angular/standalone';
 
-} from '@ionic/angular/standalone';
-import { MovieResult } from '../services/interfaces';
-import { Movie } from '../services/movie';
 import { catchError, finalize } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { Movie } from '../httpService/movie.service';
+import { environment } from 'src/environments/environment';
+import { MovieDetailsModel, MoviesResponseModel } from '../models/movie';
 
 @Component({
   selector: 'app-home-defer',
@@ -41,48 +27,46 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     IonBadge,
     IonInfiniteScroll,
-    IonInfiniteScrollContent]
+    IonInfiniteScrollContent, IonSpinner]
 })
-export class HomeDeferPage{
+export class HomeDeferPage {
   private movieService = inject(Movie);
-  public isLoading:boolean = false;
-  public imageBaseUrl:string = 'https://image.tmdb.org/t/p';
-  public movies:MovieResult[]=[];
-  public error:any=null
-  private currentPage:number = 1;
+  public isLoading: boolean = false;
+  public imageBaseUrl: string = environment.image_base_url;
+  public movies: MovieDetailsModel[] = [];
+  public error: string = "";
+  private currentPage: number = 1;
   public dummyArray = new Array(10);
   constructor() {
     this.loadTopRatedMovies();
   }
-  loadTopRatedMovies(event?:InfiniteScrollCustomEvent){
-    if(!event){
+  loadTopRatedMovies(event?: InfiniteScrollCustomEvent) {
+    if (!event) {
       this.isLoading = true;
     }
     this.movieService.getTopRatedMovies().pipe(
-      finalize(()=>{
+      finalize(() => {
         this.isLoading = false;
-        if(event){
+        if (event) {
           event.target.complete();
         }
       }),
-       catchError((err: any) => {
-          console.log(err);
-          this.error =
-            err?.error?.status_message ||
-            'An error occurred while fetching movies.';
-          return [];
-        })
+      catchError((err: any) => {
+        this.error =
+          err?.error?.status_message ||
+          'An error occurred while fetching movies.';
+        return [];
+      })
     ).subscribe({
-      next:(res)=>{
-        console.log(res);
+      next: (res) => {
         this.movies.push(...res.results);
-        if(event){
+        if (event) {
           event.target.disabled = this.currentPage === res.total_pages;
         }
       }
     });
   }
-  loadMore(event:InfiniteScrollCustomEvent){
+  loadMore(event: InfiniteScrollCustomEvent) {
     this.currentPage++;
     this.loadTopRatedMovies(event);
   }

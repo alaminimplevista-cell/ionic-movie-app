@@ -4,31 +4,66 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" style="padding: 16px;">
+<ion-content style="padding: 16px;"
+
+>
 
   @if (movie(); as movie) {
+    <ion-card class="centered-card">
+  <img
+  class="details-card-image"
+  [src]="imageBaseUrl+'/w500'+ movie.poster_path" 
+  [alt]="movie.title + ' Poster'"
+  />
 
-    <img 
-      [src]="imageBaseUrl+'/w300'+ movie.poster_path" 
-      [alt]="movie.title + ' Poster'"
-      style="width: 100%; height: 90vh; border-radius: 12px; margin-bottom: 16px;"
-    />
+  <ion-card-header>
+    <ion-card-title>{{movie.title}}</ion-card-title>
+    <ion-card-subtitle>{{movie.release_date | date:'y'}}</ion-card-subtitle>
+    <ion-card-subtitle>
+      <ion-badge>{{movie.vote_average}}</ion-badge>
+    </ion-card-subtitle>
+    
+    <ion-card-subtitle>
+      @for(genre of movie.genres; track genre.id; let isLast = $last; ){
+        <ion-badge style="margin-right: 4px;">
+          {{genre.name}}
+          
+        </ion-badge>
+        {{!isLast ? '.' : ''}}
+      }
+    </ion-card-subtitle>
+  </ion-card-header>
 
-    <h2>{{ movie.title }}</h2>
+  <ion-card-content>
+    {{movie.overview}}
+  </ion-card-content>
+</ion-card>
 
-    <p><strong>Release Date:</strong> {{ movie.release_date | date }}</p>
-    <p><strong>Rating:</strong> {{ movie.vote_average }}</p>
-
-    <p><strong>Overview:</strong></p>
-    <p>{{ movie.overview }}</p>
+   
 
   } @else {
 
-    <!-- Skeleton Loader -->
-    <ion-skeleton-text animated style="width: 100%; height: 300px; margin-bottom: 16px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 60%; height: 24px;"></ion-skeleton-text>
-    <ion-skeleton-text animated style="width: 80%; height: 20px; margin-top: 10px;"></ion-skeleton-text>
-
+    <ion-card class="centered-card">
+      <div>
+        <ion-skeleton-text animated style="width: 100%; height: 300px;"></ion-skeleton-text>
+      </div>
+  
+      <ion-card-header>
+        <ion-card-title>
+          <ion-skeleton-text animated style="width: 60%; height: 20px; margin-bottom: 8px;"></ion-skeleton-text>
+        </ion-card-title>
+        <ion-card-subtitle>
+        <ion-skeleton-text animated style="width: 40%; height: 16px; margin-bottom: 8px;"></ion-skeleton-text>
+        </ion-card-subtitle>
+        <ion-card-subtitle>
+        <ion-skeleton-text animated style="width: 20%; height: 16px;"></ion-skeleton-text>
+        </ion-card-subtitle>
+      </ion-card-header>
+  
+      <ion-card-content>
+        <ion-skeleton-text animated style="width: 100%; height: 80px;"></ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
   }
 
 </ion-content>
